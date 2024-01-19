@@ -1,14 +1,14 @@
 import uvicorn
 from fastapi import FastAPI
 
-from app.routers import users
+from app.routers.users import users_router
 
 app = FastAPI(
     title="Mini app to learn FastAPI",
     version="0.0.1",
 )
 
-app.include_router(users.users_router)
+app.include_router(users_router)
 
 @app.get("/")
 async def root():
