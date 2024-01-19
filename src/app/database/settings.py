@@ -1,9 +1,14 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
-DATABASE_URL = "sqlite:///./sql_app.db"
+user = 'postgres'
+password = 'example'
+host = 'localhost'
+port = '5432'
+database = 'mydb'
+connection_str = f'postgresql:// {user}:{password}@{host}:{port}/{database}'
 
-engine = create_engine("sqlite+pysqlite:///:memory:",
+engine = create_engine(connection_str,
                        echo=True,
                        connect_args={"check_same_thread": False})
 
