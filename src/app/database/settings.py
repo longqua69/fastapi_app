@@ -9,8 +9,7 @@ database = 'mydb'
 connection_str = f'postgresql:// {user}:{password}@{host}:{port}/{database}'
 
 engine = create_engine(connection_str,
-                       echo=True,
-                       connect_args={"check_same_thread": False})
+                       echo=True)
 
 local_session = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
