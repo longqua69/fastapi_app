@@ -6,7 +6,7 @@ password = 'example'
 host = 'localhost'
 port = '5432'
 database = 'mydb'
-connection_str = f'postgresql:// {user}:{password}@{host}:{port}/{database}'
+connection_str = f'postgresql://{user}:{password}@{host}:{port}/{database}'
 
 engine = create_engine(connection_str,
                        echo=True)
