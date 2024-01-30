@@ -6,7 +6,7 @@ class UserBase(BaseModel):
     email: str | None = None
 
 class UserMaker(UserBase):
-    pass
+    plain_password: str
 
 class User(UserBase):
     id: int
@@ -22,3 +22,6 @@ class Item(ItemMaker):
 class Token(BaseModel):
     access_token: str
     token_type: str
+
+class TokenData(BaseModel):
+    username: str
