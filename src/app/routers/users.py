@@ -1,17 +1,13 @@
 from typing import Annotated
 
-from fastapi import (
-    APIRouter,
-    Body,
-    Depends,
-    status,
-    HTTPException
-)
-from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
+from fastapi import APIRouter, Body, Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
+from app.database.database_handler import (get_user_by_username,
+                                           populate_user_table)
 from app.utils.dependencies import database_session
-from app.database.database_handler import get_user_by_username, populate_user_table
+
 from .models import UserMaker
 
 users_router = APIRouter(
