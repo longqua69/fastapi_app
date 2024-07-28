@@ -1,6 +1,11 @@
 name: Check Linting and Formatting
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - master
+  pull-request:
+      - master
 
 jobs:
   lint-and-format:
