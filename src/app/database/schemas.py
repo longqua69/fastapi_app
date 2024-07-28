@@ -1,3 +1,7 @@
+"""Database schemas for the application."""
+
+# pylint: disable=missing-function-docstring,missing-class-docstring,too-few-public-methods
+
 from sqlalchemy import ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column
 

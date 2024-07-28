@@ -1,11 +1,12 @@
+
+# pylint: disable=missing-docstring
+
 from typing import Annotated
 
 from fastapi import APIRouter, Body, Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
-from app.database.database_handler import (get_user_by_username,
-                                           populate_user_table)
+from app.database.database_handler import get_user_by_username
 from app.utils.dependencies import database_session
 
 from .models import UserMaker
@@ -27,10 +28,8 @@ async def create_user(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"username {user_info.username} already existed"
         )
-    
     return True
 
 @users_router.get("/", response_model=list[UserMaker])
 async def get_users():
     pass
-

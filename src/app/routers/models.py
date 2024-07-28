@@ -1,3 +1,7 @@
+"""This module contains the Pydantic models for the FastAPI application."""
+
+# pylint: disable=missing-function-docstring,missing-class-docstring,too-few-public-methods
+
 from pydantic import BaseModel
 
 
