@@ -1,10 +1,12 @@
-from sqlalchemy.orm import (
-    Mapped,
-    mapped_column,
-)
-from sqlalchemy import String, ForeignKey
+"""Database schemas for the application."""
+
+# pylint: disable=missing-function-docstring,missing-class-docstring,too-few-public-methods
+
+from sqlalchemy import ForeignKey, String
+from sqlalchemy.orm import Mapped, mapped_column
 
 from .settings import Base
+
 
 class User(Base):
     __tablename__ = "user"
@@ -14,6 +16,7 @@ class User(Base):
     hashed_password: Mapped[str] = mapped_column(nullable=False)
     fullname: Mapped[str | None]
     email: Mapped[str | None]
+
 
 class Item(Base):
     __tablename__ = "item"
