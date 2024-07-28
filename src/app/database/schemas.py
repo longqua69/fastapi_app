@@ -17,6 +17,7 @@ class User(Base):
     fullname: Mapped[str | None]
     email: Mapped[str | None]
 
+
 class Item(Base):
     __tablename__ = "item"
 
