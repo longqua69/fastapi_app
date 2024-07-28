@@ -3,7 +3,7 @@ name: Check Linting and Formatting
 on:
   push:
     branches:
-      - master
+      - '*'
   pull-request:
       - master
 
