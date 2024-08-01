@@ -5,12 +5,9 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
-USER = "postgres"
-PASSWORD = "example"
-HOST = "localhost"
-PORT = "5432"
-DATABASE = "mydb"
-CONNECTION_STR = f"postgresql://{USER}:{PASSWORD}@{HOST}:{PORT}/{DATABASE}"
+from app.settings.environments import DB_HOST, DB_NAME, DB_PASSWORD, DB_PORT, DB_USER
+
+CONNECTION_STR = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
 engine = create_engine(CONNECTION_STR, echo=True)
 
