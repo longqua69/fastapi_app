@@ -69,21 +69,21 @@ def create_access_token(data: dict, expiration_delta: timedelta | None) -> str:
 
     data_to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(
-        data_to_encode, key=SECRET_KEY, algorithm=HASHING_ALGORITHM
+        data_to_encode, key=SECRET_KEY, algorithm=HASHING_ALGORITHM  # type: ignore
     )
     return encoded_jwt
 
 
-def verify_access_token(token: str, db_session: Session) -> dict:
+def verify_access_token(token: str, db_session: Session) -> TokenData:
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[HASHING_ALGORITHM])
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[HASHING_ALGORITHM])  # type: ignore
         username: str = payload.get("sub")
         if not username:
             raise CredentialsException(detail="Could not validate credentials")
         token_data = TokenData(username=username)
     except InvalidTokenError as exc:
         raise CredentialsException(detail="Invalid token") from exc
-    user = get_user_by_username(username=token_data.username, db_session=db_session)
+    user = get_user_by_username(username=token_data.username, db_session=db_session)  # type: ignore
     if not user:
         raise CredentialsException(detail="User not found")
     return token_data
@@ -97,9 +97,7 @@ def verify_hashed_password(plain_password: str, hashed_password: str) -> bool:
     return password_context.verify(plain_password, hashed_password)
 
 
-def authenticate_user(
-    username: str, plain_password: str, db_session: Session = database_session
-):
+def authenticate_user(username: str, plain_password: str, db_session: Session):
     user = get_user_credentials(db_session=db_session, username=username)
     if user is None:
         return False
