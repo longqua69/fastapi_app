@@ -1,7 +1,8 @@
 """This module contains the dependencies used in the FastAPI application."""
 
 # pylint: disable=missing-function-docstring
-from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
+from fastapi.security import OAuth2PasswordBearer
+
 from app.database.settings import local_session
 
 
@@ -11,5 +12,6 @@ def database_session():
         yield session
     finally:
         session.close()
+
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")

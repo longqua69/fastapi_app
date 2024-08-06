@@ -1,11 +1,12 @@
-# pylint: disable=missing-docstring
+# pylint: disable=missing-docstring,fixme
 
 from datetime import datetime, timedelta, timezone
 from typing import Annotated
 
-from fastapi import APIRouter, Body, Depends, HTTPException, status
+import jwt
+from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from jose import JWTError, jwt
+from jwt.exceptions import InvalidTokenError
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 
@@ -17,9 +18,11 @@ from app.settings.environments import (
 )
 from app.utils.dependencies import database_session
 
-from .models import Token, UserMaker
+from .exceptions import CredentialsException
+from .models import Token, TokenData
 
-users_router = APIRouter(prefix="/api/users", tags=["users"])
+# users_router = APIRouter(prefix="/api/users", tags=["users"])  # FIXME: prefix
+users_router = APIRouter(tags=["users"])
 
 password_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -27,7 +30,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
 @users_router.post("/token")
-async def login_to_get_access_token(
+async def login(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
     db_session: Annotated[Session, Depends(database_session)],
 ) -> Token:
@@ -48,6 +51,15 @@ async def login_to_get_access_token(
     return Token(access_token=access_token, token_type="bearer")
 
 
+@users_router.get("/current_user")
+async def get_current_user(
+    token: Annotated[str, Depends(oauth2_scheme)],
+    db_session: Annotated[Session, Depends(database_session)],
+):
+    token_data = verify_access_token(token=token, db_session=db_session)
+    return token_data
+
+
 def create_access_token(data: dict, expiration_delta: timedelta | None) -> str:
     data_to_encode = data.copy()
     if expiration_delta:
@@ -60,6 +72,21 @@ def create_access_token(data: dict, expiration_delta: timedelta | None) -> str:
         data_to_encode, key=SECRET_KEY, algorithm=HASHING_ALGORITHM
     )
     return encoded_jwt
+
+
+def verify_access_token(token: str, db_session: Session) -> dict:
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[HASHING_ALGORITHM])
+        username: str = payload.get("sub")
+        if not username:
+            raise CredentialsException(detail="Could not validate credentials")
+        token_data = TokenData(username=username)
+    except InvalidTokenError as exc:
+        raise CredentialsException(detail="Invalid token") from exc
+    user = get_user_by_username(username=token_data.username, db_session=db_session)
+    if not user:
+        raise CredentialsException(detail="User not found")
+    return token_data
 
 
 def generate_hashed_password(plain_password: str) -> str:
@@ -79,23 +106,3 @@ def authenticate_user(
     if not verify_hashed_password(plain_password, user.hashed_password):
         return False
     return user
-
-
-@users_router.post("/create_user/")
-async def create_user(
-    user_info: Annotated[UserMaker, Body()],
-    db_session: Session = Depends(database_session),
-):
-    user = get_user_by_username(username=user_info.username, db_session=db_session)
-    if user:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"username {user_info.username} already existed",
-        )
-    # return Token
-
-
-@users_router.get("/", response_model=list[UserMaker])
-async def get_users():
-    # TODO: Refactor this path operation
-    pass
