@@ -17,7 +17,7 @@ isort:
 	isort src/
 
 check-isort:
-	isort --check src/
+	isort --check src/ --profile black
 
 check-black:
 	black --check src/

@@ -27,3 +27,12 @@ class ItemMaker(BaseModel):
 class Item(ItemMaker):
     id: int
     user_id: int
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+
+class TokenData(BaseModel):
+    username: str | None = None
