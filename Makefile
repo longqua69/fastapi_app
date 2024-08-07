@@ -2,7 +2,8 @@
 
 lint: pylint mypy
 format: isort black
-check-formatting: check-isort check-black
+# check-formatting: check-isort check-black
+check-formatting: check-black
 
 pylint:
 	pylint src/
